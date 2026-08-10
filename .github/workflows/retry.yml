@@ -48,7 +48,7 @@ jobs:
           ./single_attempt.sh
 
       - name: Open issue with instance details on success
-        if: success()
+        if: steps.attempt.outputs.found == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -62,7 +62,7 @@ jobs:
             });
 
       - name: Read result for email body
-        if: success()
+        if: steps.attempt.outputs.found == 'true'
         id: readresult
         run: |
           {
@@ -72,7 +72,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Send email notification on success
-        if: success()
+        if: steps.attempt.outputs.found == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -85,7 +85,7 @@ jobs:
           body: ${{ steps.readresult.outputs.body }}
 
       - name: Disable schedule after success
-        if: success()
+        if: steps.attempt.outputs.found == 'true'
         run: |
           echo "Instance launched — no further scheduled runs needed."
           echo "You can now disable this workflow from the Actions tab if you like."

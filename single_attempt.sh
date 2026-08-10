@@ -63,6 +63,9 @@ for COMBO in "${SIZE_COMBOS[@]}"; do
         echo "AD: $AD"
         echo "$OUTPUT" | grep -E '"id"|"display-name"|"public-ip"'
       } > instance_result.txt
+      if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+        echo "found=true" >> "$GITHUB_OUTPUT"
+      fi
       exit 0
     elif echo "$OUTPUT" | grep -qi "Out of capacity\|Out of host capacity"; then
       echo "  ✗ Out of capacity. Trying next..."
@@ -77,4 +80,7 @@ done
 
 echo ""
 echo "No capacity found this pass. Will retry on next scheduled run."
-exit 1
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+  echo "found=false" >> "$GITHUB_OUTPUT"
+fi
+exit 0
