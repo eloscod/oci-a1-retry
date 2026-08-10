@@ -32,6 +32,9 @@ jobs:
           tenancy=${{ secrets.OCI_TENANCY_OCID }}
           region=${{ secrets.OCI_REGION }}
           EOF
+          chmod 600 ~/.oci/config
+          echo "SUPPRESS_LABEL_WARNING=True" >> "$GITHUB_ENV"
+          echo "OCI_CLI_SUPPRESS_FILE_PERMISSIONS_WARNING=True" >> "$GITHUB_ENV"
 
       - name: Attempt instance launch
         id: attempt
